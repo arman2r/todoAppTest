@@ -1,0 +1,40 @@
+<header>
+  <div class="container padding-y-2">
+    <h1>Creador de tareas</h1>
+  </div>
+</header>
+
+<div class="container column h-100">
+  <div class="padding-y-2">
+    <mat-toolbar>
+      <span>Lista de tareas</span>
+      <span class="example-spacer"></span>
+      <button
+        mat-raised-button
+        aria-label="Example icon-button with heart icon"
+        (click)="newTask()"
+      >
+        <mat-icon>add</mat-icon>
+        Crear tarea
+      </button>
+    </mat-toolbar>
+  </div>
+  <div class="flex">
+    <h3>Filtrar tareas</h3>
+    <button mat-raised-button (click)="filterTasks('all')">Todas</button>
+    <button mat-raised-button (click)="filterTasks('completed')">
+      Completadas
+    </button>
+    <button mat-raised-button (click)="filterTasks('pending')">
+      Pendientes
+    </button>
+  </div>
+  <app-task
+    [tasks]="todoList"
+    [assignedPersons]="listPersons"
+    (taskIdSelected)="getPersonById($event)"
+  ></app-task>
+  <div class="flex center-h">
+    <mat-spinner diameter="30" *ngIf="loading"></mat-spinner>
+  </div>
+</div>

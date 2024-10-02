@@ -1,0 +1,151 @@
+<h1 mat-dialog-title class="dialog-title">Registrar una nueva tarea</h1>
+<div mat-dialog-content class="dialog-content">
+  <p>Aquí puedes crear una nueva tarea y asignar personas</p>
+  <form [formGroup]="registerTaskForm">
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Nombre de la tarea:</mat-label>
+      <input
+        matInput
+        placeholder="Nombre de la tarea:"
+        formControlName="title"
+      />
+      <mat-error
+        *ngIf="
+          registerTaskForm.get('title')?.hasError('required') &&
+          registerTaskForm.get('title')?.touched
+        "
+      >
+        El nombre de la tarea es obligatorio.
+      </mat-error>
+      <mat-error
+        *ngIf="
+          registerTaskForm.get('title')?.hasError('minlength') &&
+          registerTaskForm.get('title')?.touched
+        "
+      >
+        El nombre de la tarea no debe ser inferior a 5 caracteres.
+      </mat-error>
+    </mat-form-field>
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Fecha límite</mat-label>
+      <input
+        matInput
+        [matDatepicker]="dp3"
+        readonly
+        formControlName="deadLine"
+        [matDatepickerFilter]="dateFilter"
+      />
+      <mat-hint>MM/DD/YYYY</mat-hint>
+      <mat-datepicker-toggle matIconSuffix [for]="dp3"></mat-datepicker-toggle>
+      <mat-datepicker #dp3 [disabled]="false"></mat-datepicker>
+    </mat-form-field>
+  </form>
+  <br />
+  <p>Asociar persona:</p>
+  <form [formGroup]="personForm">
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Nombre Completo:</mat-label>
+      <input
+        matInput
+        placeholder="Nombre Completo:"
+        formControlName="fullName"
+      />
+      <mat-error
+        *ngIf="
+          personForm.get('fullName')?.hasError('required') &&
+          personForm.get('fullName')?.touched
+        "
+      >
+        El nombre completo es obligatorio.
+      </mat-error>
+      <mat-error
+        *ngIf="
+          personForm.get('fullName')?.hasError('minlength') &&
+          personForm.get('fullName')?.touched
+        "
+      >
+        El nombre completo no debe ser inferior a 5 caracteres.
+      </mat-error>
+
+      <mat-error
+        *ngIf="
+          personForm.get('fullName')?.hasError('maxlength') &&
+          personForm.get('fullName')?.touched
+        "
+      >
+        El nombre completo no debe ser superior a 50 caracteres.
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Edad:</mat-label>
+      <input matInput placeholder="Edad:" type="number" formControlName="age" />
+      <mat-error
+        *ngIf="
+          personForm.get('age')?.hasError('required') &&
+          personForm.get('age')?.touched
+        "
+      >
+        La edad es obligatoria.
+      </mat-error>
+      <mat-error
+        *ngIf="
+          personForm.get('age')?.hasError('min') &&
+          personForm.get('age')?.touched
+        "
+      >
+        Debes ingresar una edad mayor o igual a 18.
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field class="w-full">
+      <mat-label>Habilidades</mat-label>
+      <mat-chip-grid #chipGrid aria-label="Ingresar Habilidades">
+        <mat-chip-row
+          *ngFor="let skill of skills"
+          (removed)="remove(skill)"
+          [editable]="true"
+          (edited)="edit(skill, $event)"
+          [aria-description]="'Enter para editar ' + skill"
+        >
+          {{ skill }}
+          <button matChipRemove [attr.aria-label]="'remove ' + skill">
+            <mat-icon>cancel</mat-icon>
+          </button>
+        </mat-chip-row>
+        <input
+          placeholder="Nueva habilidad..."
+          [matChipInputFor]="chipGrid"
+          [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+          [matChipInputAddOnBlur]="addOnBlur"
+          (matChipInputTokenEnd)="add($event)"
+        />
+      </mat-chip-grid>
+    </mat-form-field>
+    <button
+      type="button"
+      mat-raised-button
+      (click)="associate()"
+      [disabled]="!personForm.valid"
+    >
+      Asociar persona
+    </button>
+  </form>
+  <br />
+  <div *ngIf="associatePerson.length !== 0">
+    <p>Personas asociadas:</p>
+    <app-task [persons]="associatePerson"></app-task>
+  </div>
+</div>
+<div mat-dialog-actions class="dialog-actions">
+  <button type="button" mat-button (click)="onNoClick()">Cancelar</button>
+  <button
+    type="button"
+    mat-button
+    (click)="saveAndClose()"
+    cdkFocusInitial
+    [disabled]="!registerTaskForm.valid || associatePerson.length === 0"
+  >
+    Guardar tarea
+  </button>
+</div>

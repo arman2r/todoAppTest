@@ -1,0 +1,51 @@
+<mat-accordion class="example-headers-align" multi>
+  <ng-container *ngIf="tasks?.length; else personTemplate">
+    <ng-container *ngFor="let task of tasks; let idx = index">
+      <mat-expansion-panel
+        [id]="task.taskId"
+        (opened)="panelOpenState = true"
+        (closed)="panelOpenState = false"
+        (click)="getPersonsByTaskId(task.taskId!)"
+      >
+        <mat-expansion-panel-header>
+          <mat-panel-title>Tarea {{ idx + 1 }}</mat-panel-title>
+          <mat-panel-description>{{ task.title }}</mat-panel-description>          
+          <span [ngClass]="isDeadlineGreaterOrEqual(task.deadLine) ? 'active status':'inactive status'"></span>
+        </mat-expansion-panel-header>
+        <p>Persona(s) asignada(s):</p> 
+        <ul>
+          <li *ngFor="let person of task.persons">
+            {{ person.fullName }}
+            
+            <ul>
+              <li style="list-style: none;margin-left: -20px;"><b>Skills:</b></li>
+              <li *ngFor="let skill of person.skills">
+                {{skill}}
+              </li>
+            </ul>
+          </li>          
+        </ul>
+      </mat-expansion-panel>
+    </ng-container>
+  </ng-container>
+
+  <ng-template #personTemplate>
+    <ng-container *ngFor="let person of persons; let idx = index">
+      <mat-expansion-panel
+        [id]="person.id"
+        (opened)="panelOpenState = true"
+        (closed)="panelOpenState = false"
+      >
+        <mat-expansion-panel-header>
+          <mat-panel-title>Persona {{ idx + 1 }}</mat-panel-title>
+          <mat-panel-description>{{ person.fullName }}</mat-panel-description>
+          <span style="padding:0 20px"> {{person.age}} </span>
+        </mat-expansion-panel-header>
+        <p>Habilidades:</p> 
+        <ul>
+          <li *ngFor="let skill of person.skills">{{ skill }}</li>
+        </ul> 
+      </mat-expansion-panel>
+    </ng-container>
+  </ng-template>
+</mat-accordion>
