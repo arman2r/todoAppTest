@@ -126,7 +126,7 @@
       type="button"
       mat-raised-button
       (click)="associate()"
-      [disabled]="!personForm.valid"
+      [disabled]="!personForm.valid || skills.length === 0"
     >
       Asociar persona
     </button>
